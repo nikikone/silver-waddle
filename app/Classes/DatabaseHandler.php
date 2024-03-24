@@ -94,4 +94,37 @@ class DatabaseHandler{
         return True;
     }
 
+    public function updateHourDeleteMinuts(int $hour_id, int $total){
+        $this->updateHour($total, $hour_id);
+        $this->deleteMinuts($hour_id);
+    }
+
+    private function deleteMinuts(int $hour_id){
+        $parameters = ["hour_id" => $hour_id];
+        $this->connection->delete('DELETE FROM minutes WHERE hour_id = :hour_id', $parameters);
+    }
+
+    public function updateDayTotal($day_total, $day_id){
+        $this->updateDay($day_total, $day_id);
+    }
+
+    public function getDayHourNotTotal(){
+        return $this->connection->select('SELECT a.day_id, a.date, b.hour_id, b.hour FROM (SELECT * FROM days WHERE total is NULL) as a JOIN (SELECT * FROM hours WHERE total is NULL) as b ON a.day_id = b.day_id;');
+    }
+
+    public function createHourWhitTotal(int $hour, int $total, int $day_id): void{
+        $parameters = ["day_id" => $day_id, "hour" =>  $hour, "total" => $total];
+        $this->connection->insert('INSERT INTO hours (`day_id`, `hour`, `total`) VALUES (:day_id, :hour, :total)', $parameters);
+    }
+
+    private function updateHour($total, $hour_id){
+        $parameters = ["total" => $total, "hour_id" => $hour_id];
+        $this->connection->update('UPDATE hours SET total = :total WHERE hour_id = :hour_id', $parameters);
+    }
+
+    private function updateDay($total, $day_id){
+        $parameters = ["total" => $total, "day_id" => $day_id];
+        $this->connection->update('UPDATE days SET total = :total WHERE day_id = :day_id', $parameters);
+    }
+
 }
