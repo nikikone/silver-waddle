@@ -9,13 +9,15 @@ class Updateor{
     private DatabaseHandler $dbHandler;
     private HoursCalculator $hoursCalc;
 
-    public function __construct(Connection $connection){
+    public function __construct(Connection $connection)
+    {
         $this->connection = $connection;
         $this->dbHandler = new DatabaseHandler($this->connection);
         $this->hoursCalc = new HoursCalculator($this->connection);
     }
 
-    public function start(){
+    public function start(): void
+    {
         $hoursOfDates = $this->hoursCalc->calculate();
         $objects = $this->dbHandler->getDayHourNotTotal();
         $dateToID = $this->arrayObjectsDayToIdDay($objects);
@@ -23,12 +25,13 @@ class Updateor{
         $this->iterator($hoursOfDates, $DayIdToHourIdToHour, $dateToID);
     }
 
-    private function iterator(array $hoursOfDates, array $DayIdToHourIdToHour, array $dateToID){
+    private function iterator(array $hoursOfDates, array $DayIdToHourIdToHour, array $dateToID): void
+    {
         foreach($hoursOfDates as $date => $hours){
             $day_id = $dateToID[$date];
             $day_total = (int) round(array_sum($hours) / 12);
-            foreach($hours as $hour => $fullness){
-                if (array_key_exists($hour, $DayIdToHourIdToHour[$day_id])){
+            foreach( $hours as $hour => $fullness) {
+                if (array_key_exists($hour, $DayIdToHourIdToHour[$day_id]))  {
                     $hour_id = $DayIdToHourIdToHour[$day_id][$hour];
                     $this->dbHandler->updateHourDeleteMinuts($hour_id, $fullness);
                 } else {
@@ -39,17 +42,19 @@ class Updateor{
         }
     }
 
-    private function arrayObjectsToArray(array $array): array{
+    private function arrayObjectsToArray(array $array): array
+    {
         $result = [];
-        foreach($array as $item){
+        foreach ($array as $item) {
             $result[$item->day_id][$item->hour] = $item->hour_id;
         }
         return $result;
     }
 
-    private function arrayObjectsDayToIdDay(array $array): array{
+    private function arrayObjectsDayToIdDay(array $array): array
+    {
         $result = [];
-        foreach($array as $item){
+        foreach ($array as $item) {
             $result[$item->date] = $item->day_id;
         }
         return $result;

@@ -25,7 +25,8 @@ class HandleDatabase extends Command
     private Updateor $updateor;
     protected readonly Connection $connection;
 
-    public function __construct(DatabaseManager $database){
+    public function __construct(DatabaseManager $database)
+    {
         parent::__construct();
         $this->connection = $database->connection();
         $this->updateor = new Updateor($this->connection);
