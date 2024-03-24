@@ -4,11 +4,14 @@ namespace App\Classes;
 
 class Converter{
 
-    public static function mergeDaysArray(array $array_first, array $array_second): array{
+    private const CONSTANT_VALUE = 80;
+
+    public static function mergeDaysArray(array $arrayFirst, array $arraySecond): array
+    {
         $result = [];
-        for($key = array_key_first($array_first); $key <= array_key_last($array_first); ++$key){
-            $new_array = array_merge($array_first[$key], $array_second[$key]);
-            if (sizeof($new_array) != 0){
+        for ($key = array_key_first($arrayFirst); $key <= array_key_last($arrayFirst); ++$key) {
+            $new_array = array_merge($arrayFirst[$key], $arraySecond[$key]);
+            if (sizeof($new_array) != 0) {
                 $result[$key] = (int) round(array_sum($new_array) / sizeof($new_array));
             } else {
                 $result[$key] = 0;
@@ -17,9 +20,10 @@ class Converter{
         return $result;
     }
 
-    public static function mergeHoursArray(array $array_first, array $array_second): array{
+    public static function mergeHoursArray(array $arrayFirst, array $arraySecond): array
+    {
         $result = [];
-        $array = array_merge($array_first, $array_second);
+        $array = array_merge($arrayFirst, $arraySecond);
         foreach ($array as $subArray) {
             foreach ($subArray as $key => $value) {
                 if (!isset($result[$key])) {
@@ -32,16 +36,18 @@ class Converter{
         foreach ($result as $key => $value) {
             $result[$key] = (int) round($value / sizeof($array));
         }
+        ksort($result);
         return $result;
     }
 
-    public static function decorateArrayToOutput(array $array){
-        $constant_value = 80;
-        foreach($array as $key => &$value){
-            $procent = (int) round(($value / $constant_value) * 100);
-            if ($procent <= 50){
+    public static function decorateArrayToOutput(array $array)
+    {
+        
+        foreach ($array as $key => $value) {
+            $procent = (int) round(($value / self::CONSTANT_VALUE) * 100);
+            if ($procent <= 50) {
                 $array[$key] = "low";
-            } elseif ($procent > 50 && $procent <= 80){
+            } elseif ($procent > 50 && $procent <= 80) {
                 $array[$key] = "medium";
             } else {
                 $array[$key] = "high";

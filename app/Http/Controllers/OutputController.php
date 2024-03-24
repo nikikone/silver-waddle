@@ -30,7 +30,6 @@ class OutputController extends Controller
         $objects = $this->daysCalc->calculate();
         $objects_total = $this->daysTotalCalc->calculate();
         $objects = Converter::mergeDaysArray($objects, $objects_total);
-        dd($objects);
         $result = Converter::decorateArrayToOutput($objects);
         return new OutputByDaysResponse($result);
     }
@@ -40,7 +39,6 @@ class OutputController extends Controller
         $objects = $this->hoursCalc->calculate();
         $objects_total = $this->hoursTotalCalc->calculate();
         $objects = Converter::mergeHoursArray($objects, $objects_total);
-        dd($objects);
         $result = Converter::decorateArrayToOutput($objects);
         return new OutputByHoursResponse($result);
     }
